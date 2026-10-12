@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novalen AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090b12;color:#f5f6fa;font-family:Arial,sans-serif}
+header{padding:22px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #242735}
+.logo{font-size:25px;font-weight:800;letter-spacing:-1px}
+.logo span{color:#9a8cff}
+nav a{color:#b9bdcc;text-decoration:none;margin-left:22px}
+.hero{max-width:1050px;margin:75px auto;padding:20px;text-align:center}
+.tag{display:inline-block;padding:9px 15px;border:1px solid #38334f;border-radius:30px;color:#b8adff;font-size:13px}
+h1{font-size:clamp(42px,8vw,76px);line-height:1.05;letter-spacing:-3px;margin:27px 0}
+h1 span{color:#a99aff}
+.sub{color:#a4a9ba;font-size:18px;line-height:1.7;max-width:650px;margin:0 auto 32px}
+button{cursor:pointer;border:0;border-radius:12px;padding:14px 20px;font-weight:bold;font-size:15px}
+.primary{background:#a99aff;color:#11101a}
+.secondary{background:#1a1d29;color:white;border:1px solid #303444;margin-left:8px}
+.models{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:65px;text-align:left}
+.model{padding:24px;background:#11141e;border:1px solid #292d3d;border-radius:18px}
+.model h3{margin-top:0}
+.model p{color:#a4a9ba;line-height:1.6;font-size:14px}
+.label{font-size:12px;color:#a99aff}
+.chat{max-width:760px;margin:45px auto 0;background:#11141e;border:1px solid #303444;border-radius:18px;padding:20px;text-align:left}
+select,textarea{width:100%;background:#0b0e16;color:white;border:1px solid #303444;border-radius:10px;padding:13px;margin:8px 0;font:inherit}
+textarea{min-height:105px;resize:vertical}
+#answer{white-space:pre-wrap;line-height:1.7;color:#d8dbea}
+footer{text-align:center;padding:40px;color:#777e91;font-size:13px}
+@media(max-width:650px){nav a{margin-left:10px;font-size:13px}.models{grid-template-columns:1fr}.hero{margin-top:40px}h1{letter-spacing:-2px}.secondary{margin:10px 0 0}}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">NOVALEN<span> AI</span></div>
+<nav><a href="#modelli">Modelli</a><a href="#chat">Prova la demo</a></nav>
+</header>
+<main class="hero">
+<div class="tag">✦ Intelligenza artificiale, reinventata</div>
+<h1>Le tue idee.<br><span>Nuove possibilità.</span></h1>
+<p class="sub">Un unico spazio per studiare, scrivere, programmare e trasformare le tue idee in progetti concreti.</p>
+<a href="#chat"><button class="primary">Prova Novalen AI ↗</button></a>
+<a href="#modelli"><button class="secondary">Scopri i modelli</button></a>
+<section class="models" id="modelli">
+<div class="model"><span class="label">01 · ESSENZIALE</span><h3>Novalen Pulse 1</h3><p>Per domande rapide, riassunti e attività quotidiane.</p></div>
+<div class="model"><span class="label">02 · EQUILIBRATO</span><h3>Novalen Nexus 1</h3><p>Per scrittura, studio, traduzioni e ragionamento.</p></div>
+<div class="model"><span class="label">03 · AVANZATO</span><h3>Novalen Apex 1</h3><p>Per analisi complesse, idee e assistenza al codice.</p></div>
+</section>
+<section class="chat" id="chat">
+<h2>Prova Novalen AI</h2>
+<p style="color:#a4a9ba">Questa è una demo locale: le risposte sono simulate, non generate da un modello AI reale.</p>
+<label for="model">Scegli un modello</label>
+<select id="model"><option>Novalen Pulse 1</option><option>Novalen Nexus 1</option><option>Novalen Apex 1</option></select>
+<label for="prompt">Che cosa vuoi chiedere?</label>
+<textarea id="prompt" placeholder="Scrivi qui la tua domanda..."></textarea>
+<button class="primary" onclick="reply()">Invia messaggio ↗</button>
+<div id="answer"></div>
+</section>
+</main>
+<footer>© 2026 Novalen AI · Una nuova idea, ogni giorno.</footer>
+<script>
+function reply(){
+const q=document.getElementById('prompt').value.trim();
+const a=document.getElementById('answer');
+const m=document.getElementById('model').value;
+if(!q){a.textContent='Scrivi prima una domanda.';return}
+a.textContent='Demo di '+m+'. Hai scritto: "'+q+'"\n\nQuesta versione è un prototipo grafico e non è collegata a un servizio AI. Per ottenere risposte reali sarà necessario configurare un backend e un provider AI.';
+}
+</script>
+</body>
+</html>
