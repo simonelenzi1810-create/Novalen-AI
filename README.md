@@ -1,52 +1,50 @@
 # Novalen AI
 
-Una prima applicazione web per Novalen AI: interfaccia scura responsive, cronologia locale delle conversazioni e chat AI tramite un backend separato.
+Novalen AI è una prima versione responsive di una piattaforma AI con chat e cronologia locale.
 
-## File
+## File del progetto
 
-- \`index.html\`: sito statico da pubblicare con GitHub Pages.
-- \`worker.js\`: backend Cloudflare Worker che inoltra le richieste a Groq senza esporre la chiave al browser.
+- `index.html`: interfaccia web da pubblicare su GitHub Pages.
+- `worker.js`: backend Cloudflare Worker per inoltrare le richieste a Groq.
+- `.github/workflows/deploy-pages.yml`: workflow che pubblica automaticamente solo l'interfaccia web.
 
-## Importante: nessuna chiave segreta va su GitHub
+## Sicurezza prima di tutto
 
-Il repository è pubblico. **Non** inserire la chiave API in \`index.html\`, in \`worker.js\`, in questo README o in altri file del repository. La chiave viene letta dal secret Cloudflare \`GROQ_API_KEY\`.
+Il repository è pubblico. Non aggiungere chiavi API o password ai file del repository. La chiave Groq deve essere registrata come Secret nel backend Cloudflare con nome `GROQ_API_KEY`, così non viene inviata al browser.
 
-## Passaggi per attivare la chat reale
+## 1. Pubblica l'interfaccia su GitHub Pages
 
-### A. Pubblica il sito
+È stato aggiunto un workflow automatico. Apri **Settings → Pages** e, in **Build and deployment**, seleziona **GitHub Actions** come sorgente se GitHub lo richiede. Poi apri la scheda **Actions** e controlla il workflow **Deploy Novalen AI to GitHub Pages**. L'URL previsto, dopo una pubblicazione riuscita, è:
 
-1. In GitHub apri il repository \`Novalen-AI\`.
-2. Vai in **Settings → Pages**.
-3. In **Build and deployment**, seleziona **Deploy from a branch**.
-4. Seleziona la branch \`main\` e la cartella \`/(root)\`, poi salva.
-5. Attendi la pubblicazione. L'indirizzo previsto è \`https://simonelenzi1810-create.github.io/Novalen-AI/\`.
+https://simonelenzi1810-create.github.io/Novalen-AI/
 
-### B. Crea il backend Cloudflare
+La prima pubblicazione può richiedere qualche minuto. GitHub Pages è disponibile per repository pubblici sui piani gratuiti. Se il workflow fallisce, apri il dettaglio dell'esecuzione nella scheda Actions e guarda il primo passaggio rosso.
+
+## 2. Configura il backend Cloudflare
 
 1. Apri il dashboard Cloudflare e vai in **Workers & Pages**.
-2. Crea un nuovo Worker, ad esempio \`novalen-ai-api\`.
-3. Nell'editor del Worker sostituisci il codice iniziale con l'intero contenuto del file \`worker.js\`, poi fai Deploy.
-4. Apri il Worker e vai in **Settings → Variables and Secrets**.
-5. Aggiungi un elemento di tipo **Secret** chiamato esattamente \`GROQ_API_KEY\`. Incolla il valore della tua chiave Groq solo lì, poi salva e ridistribuisci se richiesto.
-6. Aggiungi una variabile di testo chiamata \`ALLOWED_ORIGIN\` con valore \`https://simonelenzi1810-create.github.io\`. Non aggiungere il percorso \`/Novalen-AI\`: l'origine è solo dominio + protocollo.
-7. Lascia \`GROQ_MODEL\` non impostato per usare il modello predefinito \`openai/gpt-oss-20b\`, oppure impostalo solo dopo avere verificato che il tuo account Groq possa usarlo.
-8. Copia l'URL del Worker. L'endpoint completo deve terminare con \`/api/chat\`, ad esempio \`https://NOME-WORKER.NOME-ACCOUNT.workers.dev/api/chat\`.
+2. Crea un Worker, ad esempio `novalen-ai-api`.
+3. Apri il file `worker.js` in questo repository, copia tutto il codice e incollalo nell'editor del Worker, poi fai Deploy.
+4. Nel Worker vai in **Settings → Variables and Secrets** e aggiungi un valore di tipo **Secret** chiamato esattamente `GROQ_API_KEY`. Incolla la chiave Groq solo nel campo segreto di Cloudflare.
+5. Aggiungi una variabile di testo chiamata `ALLOWED_ORIGIN` con valore `https://simonelenzi1810-create.github.io` (solo dominio e protocollo, senza `/Novalen-AI`).
+6. Lascia `GROQ_MODEL` non impostato per usare il modello predefinito `openai/gpt-oss-20b`, oppure impostane uno che risulta disponibile nel tuo account Groq.
+7. Copia l'URL del Worker. Il backend che inserirai nell'app deve terminare con `/api/chat`, ad esempio `https://NOME-WORKER.NOME-ACCOUNT.workers.dev/api/chat`.
 
-### C. Collega il sito al backend
+Verifica le condizioni, i limiti e l'eventuale fatturazione del provider prima di usare una chiave. Non aggiungere una carta di pagamento se non vuoi un servizio a pagamento. Se le condizioni del servizio prevedono un'età minima maggiore della tua, chiedi assistenza a un genitore/tutore; non dichiarare un'età falsa.
 
-1. Apri il sito Novalen AI pubblicato.
-2. Tocca l'icona dell'ingranaggio in alto a destra.
-3. Incolla l'endpoint completo del Worker nel campo **Indirizzo backend**.
-4. Premi **Salva connessione** e prova a inviare un messaggio.
+## 3. Collega l'interfaccia al backend
 
-L'indirizzo del backend viene salvato nel browser. Non è la chiave API.
+1. Apri la pagina pubblicata.
+2. Tocca l'ingranaggio in alto a destra.
+3. Incolla l'URL completo del Worker che termina con `/api/chat`.
+4. Premi **Salva connessione**, poi invia un messaggio di prova.
 
-## Configurazione e limiti
+L'URL del backend viene memorizzato solo nel browser. La chiave API non va mai inserita in questa impostazione.
 
-- GitHub Pages serve solo il frontend statico; il backend va distribuito separatamente.
-- La chiave è protetta nel secret di Cloudflare, non nel browser.
-- Il Worker include una limitazione di richieste di base per ridurre gli abusi. La limitazione in memoria è solo una protezione iniziale, non un sistema completo contro gli attacchi. Prima di condividere pubblicamente il sito, aggiungi limiti di utilizzo/controlli adatti nel provider e nel servizio di hosting.
-- L'accesso al modello e le quote dipendono dal tuo account Groq e possono cambiare. Controlla le condizioni, i limiti e l'eventuale fatturazione di Groq prima di usare la chiave.
-- Le modalità **Pulse**, **Nexus** e **Apex** applicano stili diversi allo stesso modello AI in questa prima versione; non sono tre modelli proprietari separati.
-- La cronologia è salvata nel localStorage del browser corrente. Non è sincronizzata tra dispositivi.
-- Non inserire dati sensibili nei messaggi. La richiesta viene inoltrata a un provider AI esterno.
+## Note
+
+- GitHub Pages ospita solo il frontend statico; non esegue il backend.
+- Le modalità Pulse, Nexus e Apex usano lo stesso modello AI con istruzioni diverse: non sono tre modelli proprietari distinti.
+- La cronologia è conservata nel localStorage del browser corrente, non sincronizzata tra dispositivi.
+- Il Worker contiene limiti basilari per un prototipo, non una protezione completa contro gli abusi. Per un sito pubblico aggiungi controlli di utilizzo adeguati.
+- Non inserire dati sensibili in chat. Le richieste sono inoltrate al provider AI esterno.
