@@ -19,8 +19,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
 .topbar{position:fixed;inset:0 0 auto;z-index:20;background:rgba(0,0,0,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
 .topbar-inner{height:62px;max-width:1080px;margin:0 auto;padding:0 26px;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0;color:white;padding:4px}
-.brand-mark{width:19px;height:19px;border:1px solid rgba(255,255,255,.8);border-radius:5px;display:grid;place-items:center;transition:transform .2s}
-.brand:hover .brand-mark{transform:scale(.94)}
+.brand-mark{width:29px;height:29px;display:grid;place-items:center;flex-shrink:0;transition:transform .25s ease,filter .25s ease}
+.brand-mark svg{display:block;width:29px;height:29px;overflow:visible}
+.brand:hover .brand-mark{transform:rotate(-4deg) scale(1.04);filter:drop-shadow(0 0 7px #d4d4d812)}
 .brand-dot{width:6px;height:6px;background:#fff;border-radius:50%}
 .brand-name{font-size:13px;font-weight:300;letter-spacing:-.035em}
 .brand-name em{font-family:"Fira Code",monospace;color:var(--muted);font-size:11px;font-style:normal;margin-left:4px}
@@ -86,11 +87,24 @@ footer{padding:15px 20px 21px;text-align:center;color:#3f3f46;font-family:"Fira 
 <header class="topbar">
   <div class="topbar-inner">
     <button class="brand" onclick="showView('landing')" aria-label="Torna alla homepage">
-      <span class="brand-mark"><span class="brand-dot"></span></span>
+      <span class="brand-mark" aria-label="Logo Novalen AI">
+        <svg viewBox="0 0 32 32" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="novalen-mark" x1="5" y1="4" x2="27" y2="28" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="1" stop-color="#777780"/>
+            </linearGradient>
+          </defs>
+          <circle cx="16" cy="16" r="13.2" fill="none" stroke="#29292f" stroke-width="1.1"/>
+          <path d="M9 21.5V10.5L23 21.5V10.5" fill="none" stroke="url(#novalen-mark)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="23" cy="10.5" r="2.1" fill="#ffffff"/>
+        </svg>
+      </span>
       <span class="brand-name">novalen<em>ai</em></span>
     </button>
     <div class="top-actions">
-      <div class="status" title="Questa versione non è ancora collegata a un modello AI"><span class="status-dot"></span><span>preview mode</span></div>
+      <div class="status" id="connectionStatus" title="Stato della connessione AI"><span class="status-dot" id="connectionDot"></span><span id="statusLabel">demo mode</span></div>
+      <button class="top-button" onclick="openSettings()">settings</button>
       <button class="top-button" onclick="showView('chat')">chat ↗</button>
     </div>
   </div>
@@ -141,6 +155,24 @@ footer{padding:15px 20px 21px;text-align:center;color:#3f3f46;font-family:"Fira 
 </main>
 <footer>novalen ai · una nuova idea, ogni giorno</footer>
 
+<div id="settingsOverlay" class="settings-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" style="display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.84);backdrop-filter:blur(10px);padding:20px;align-items:center;justify-content:center">
+  <div style="width:100%;max-width:440px;background:#08080a;border:1px solid #27272a;border-radius:12px;padding:22px;box-shadow:0 20px 80px #000">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <h2 id="settingsTitle" style="font-size:16px;font-weight:400;letter-spacing:-.03em;margin:0">Connessione AI</h2>
+      <button class="top-button" onclick="closeSettings()" aria-label="Chiudi impostazioni">chiudi ×</button>
+    </div>
+    <p style="font-size:11px;line-height:1.8;color:#a1a1aa;margin:14px 0 18px">Per attivare risposte reali, incolla l'indirizzo del backend Cloudflare Worker. Non inserire qui la chiave Groq: va conservata come Secret nel backend.</p>
+    <label for="backendUrl" style="display:block;font-size:10px;color:#d4d4d8;margin-bottom:7px">URL backend (deve terminare con /api/chat)</label>
+    <input id="backendUrl" type="url" autocomplete="url" placeholder="https://nome-worker.nome-account.workers.dev/api/chat" style="width:100%;border:1px solid #27272a;background:#000;color:#fff;border-radius:6px;padding:12px;font-size:11px;outline:none">
+    <div id="settingsError" role="status" style="display:none;color:#fca5a5;font-size:10px;line-height:1.6;margin-top:9px"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+      <button class="top-button" onclick="disconnectBackend()">scollega</button>
+      <button class="top-button" style="background:#f4f4f5;color:#000;border-color:#f4f4f5" onclick="saveBackend()">salva connessione</button>
+    </div>
+    <p style="font-size:9px;line-height:1.7;color:#52525b;margin:16px 0 0">L'indirizzo viene salvato in questo browser. Non salvare chiavi API, password o informazioni private nel sito pubblico.</p>
+  </div>
+</div>
+
 <script>
 (function(){
   const landingView=document.getElementById('landingView');
@@ -148,14 +180,26 @@ footer{padding:15px 20px 21px;text-align:center;color:#3f3f46;font-family:"Fira 
   const heroInput=document.getElementById('heroInput');
   const chatInput=document.getElementById('chatInput');
   const messages=document.getElementById('messages');
-  const emptyChat=document.getElementById('emptyChat');
-  let history=[];
+  const overlay=document.getElementById('settingsOverlay');
+  const backendField=document.getElementById('backendUrl');
+  const settingsError=document.getElementById('settingsError');
+  const API_KEY='novalen_backend_url_v1';
+  let backendUrl=localStorage.getItem(API_KEY)||'';
+  let conversation=[];
+  let sending=false;
+
+  function updateStatus(){
+    document.getElementById('statusLabel').textContent=backendUrl?'backend collegato':'demo mode';
+    document.getElementById('connectionDot').style.background=backendUrl?'#34d399':'#71717a';
+    document.getElementById('connectionStatus').title=backendUrl?'Endpoint backend salvato in questo browser':'La chat è in modalità demo';
+    document.querySelector('.chat-bottom-note').textContent=backendUrl?'NOVALEN AI · RISPOSTE TRAMITE BACKEND ESTERNO':'INTERFACCIA IN ANTEPRIMA · MODELLO AI NON ANCORA COLLEGATO';
+  }
 
   window.showView=function(view){
     const isChat=view==='chat';
     landingView.style.display=isChat?'none':'flex';
     chatView.classList.toggle('active',isChat);
-    if(isChat){setTimeout(()=>chatInput.focus(),80);}
+    if(isChat)setTimeout(()=>chatInput.focus(),80);
     window.scrollTo({top:0,behavior:'smooth'});
   };
   window.startChatFromHero=function(){
@@ -163,19 +207,44 @@ footer{padding:15px 20px 21px;text-align:center;color:#3f3f46;font-family:"Fira 
     showView('chat');
     if(text){chatInput.value=text;sendMessage();}
   };
-  window.usePrompt=function(text){
-    heroInput.value=text;
-    startChatFromHero();
+  window.usePrompt=function(text){heroInput.value=text;startChatFromHero();};
+  window.handleChatKey=function(event){if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}};
+  window.resizeInput=function(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,180)+'px';};
+  window.openSettings=function(){
+    backendField.value=backendUrl;
+    settingsError.style.display='none';
+    overlay.style.display='flex';
+    backendField.focus();
   };
-  window.handleChatKey=function(event){
-    if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}
+  window.closeSettings=function(){overlay.style.display='none';};
+  window.disconnectBackend=function(){
+    backendUrl='';
+    localStorage.removeItem(API_KEY);
+    backendField.value='';
+    updateStatus();
+    closeSettings();
   };
-  window.resizeInput=function(el){
-    el.style.height='auto';
-    el.style.height=Math.min(el.scrollHeight,180)+'px';
+  window.saveBackend=function(){
+    const value=backendField.value.trim().replace(/\/+$/,'');
+    if(value && !/^https:\/\/[^ ]+\/api\/chat$/.test(value)){
+      settingsError.textContent='Inserisci l’URL HTTPS completo del Worker, con /api/chat alla fine.';
+      settingsError.style.display='block';
+      return;
+    }
+    backendUrl=value;
+    if(value)localStorage.setItem(API_KEY,value);else localStorage.removeItem(API_KEY);
+    updateStatus();
+    closeSettings();
   };
-  function addMessage(role,text){
-    if(emptyChat) emptyChat.style.display='none';
+  overlay.addEventListener('click',function(event){if(event.target===overlay)closeSettings();});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape')closeSettings();});
+
+  function resetMessages(){
+    messages.innerHTML='<div class="empty-chat" id="emptyChat"><div class="empty-symbol">N</div><h2>da dove iniziamo?</h2><p>Scrivi una domanda, esplora un’idea o comincia da uno dei suggerimenti in homepage.</p></div>';
+  }
+  function addMessage(role,text,isDemo){
+    const empty=document.getElementById('emptyChat');
+    if(empty)empty.remove();
     const row=document.createElement('div');
     row.className='message '+role;
     const avatar=document.createElement('div');
@@ -190,35 +259,60 @@ footer{padding:15px 20px 21px;text-align:center;color:#3f3f46;font-family:"Fira 
     content.className='message-content';
     content.textContent=text;
     main.appendChild(heading);main.appendChild(content);
-    if(role==='assistant'){
+    if(role==='assistant'&&isDemo){
       const note=document.createElement('div');
       note.className='demo-note';
-      note.textContent='Risposta dimostrativa: il collegamento al modello AI verrà attivato in una fase successiva.';
+      note.textContent='Risposta dimostrativa: collega un backend nelle impostazioni per usare un modello AI reale.';
       main.appendChild(note);
     }
     row.appendChild(avatar);row.appendChild(main);messages.appendChild(row);
     row.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
-  window.sendMessage=function(){
-    const text=chatInput.value.trim();
-    if(!text)return;
-    addMessage('user',text);
-    chatInput.value='';chatInput.style.height='auto';
+  function addTyping(){
     const row=document.createElement('div');
     row.className='message';row.id='thinking';
     row.innerHTML='<div class="message-avatar">N</div><div class="message-main"><div class="message-heading">novalen ai</div><div class="dots"><i></i><i></i><i></i></div></div>';
-    messages.appendChild(row);
-    row.scrollIntoView({behavior:'smooth',block:'nearest'});
-    setTimeout(function(){
-      row.remove();
-      const response='La tua richiesta è stata ricevuta. L’interfaccia di Novalen AI è pronta, ma non è ancora collegata a un modello AI reale. Nel prossimo passaggio possiamo configurare in modo sicuro il collegamento a Groq.';
-      addMessage('assistant',response);
-    },600);
+    messages.appendChild(row);row.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function removeTyping(){const row=document.getElementById('thinking');if(row)row.remove();}
+
+  window.sendMessage=async function(){
+    const text=chatInput.value.trim();
+    if(!text||sending)return;
+    addMessage('user',text);
+    conversation.push({role:'user',content:text});
+    chatInput.value='';chatInput.style.height='auto';
+    sending=true;addTyping();
+    try{
+      if(!backendUrl){
+        await new Promise(resolve=>setTimeout(resolve,450));
+        removeTyping();
+        const response='Ho ricevuto il tuo messaggio. La grafica di Novalen AI è attiva, ma la chat è ancora in modalità demo: per generare risposte reali, collega un backend dalle impostazioni. La chiave Groq deve restare segreta sul server.';
+        addMessage('assistant',response,true);
+        conversation.push({role:'assistant',content:response});
+      }else{
+        const response=await fetch(backendUrl,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({mode:'pulse',messages:conversation.slice(-12)})
+        });
+        let data={};try{data=await response.json();}catch(e){}
+        if(!response.ok)throw new Error(data.error||'Il backend ha restituito un errore ('+response.status+').');
+        if(typeof data.reply!=='string'||!data.reply.trim())throw new Error('La risposta del backend non è valida.');
+        removeTyping();
+        addMessage('assistant',data.reply.trim(),false);
+        conversation.push({role:'assistant',content:data.reply.trim()});
+      }
+    }catch(error){
+      removeTyping();
+      const message=error instanceof TypeError
+        ?'Non riesco a raggiungere il backend. Verifica l’URL, la pubblicazione del Worker e le impostazioni CORS.'
+        :(error&&error.message?error.message:'Errore di connessione. Riprova.');
+      addMessage('assistant',message,false);
+    }finally{sending=false;chatInput.focus();}
   };
-  window.clearChat=function(){
-    history=[];
-    messages.innerHTML='<div class="empty-chat" id="emptyChat"><div class="empty-symbol">N</div><h2>da dove iniziamo?</h2><p>Scrivi una domanda, esplora un\\'idea o comincia da uno dei suggerimenti in homepage.</p></div>';
-  };
+  window.clearChat=function(){conversation=[];resetMessages();chatInput.value='';};
+  updateStatus();
 })();
 </script>
 </body>
