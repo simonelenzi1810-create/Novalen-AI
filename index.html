@@ -1,348 +1,224 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080a10">
-<meta name="description" content="Novalen AI: uno spazio intelligente per imparare, creare e risolvere problemi.">
-<title>Novalen AI — Il tuo spazio intelligente</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
+<meta name="description" content="Novalen AI — intelligenza fluida, senza distrazioni.">
+<title>novalen ai</title>
 <style>
-:root{color-scheme:dark;--bg:#080a10;--panel:#10131d;--panel2:#151927;--line:#272c3c;--text:#f4f5fb;--muted:#a2a9bc;--violet:#aa98ff;--blue:#7cc9ff;--green:#81e0bd;--danger:#ff929c}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em}
-button,input,textarea,select{font:inherit}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400&display=swap');
+:root{color-scheme:dark;--black:#000;--bg:#030303;--surface:#08080a;--surface-hover:#111115;--border:#18181c;--muted:#71717a;--muted-light:#a1a1aa;--white:#f4f4f5;--green:#34d399}
+*{box-sizing:border-box;scroll-behavior:smooth}
+body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--black);color:#fff;min-height:100vh;overflow-x:hidden}
+button,input,textarea{font:inherit}
 button{cursor:pointer}
-button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--violet);outline-offset:3px}
-.app{min-height:100%;display:flex}
-.sidebar{width:270px;flex-shrink:0;background:#0c0e16;border-right:1px solid var(--line);padding:23px 15px;display:flex;flex-direction:column;gap:22px}
-.brand{display:flex;align-items:center;gap:11px;padding:0 7px}
-.brand-mark{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#c6b8ff,#7c70ed 58%,#5fa5de);display:grid;place-items:center;color:#11121c;font-weight:900;font-size:18px;box-shadow:0 5px 24px #9184ff22}
-.brand-name{font-size:18px;font-weight:800;letter-spacing:.07em}
-.brand-name span{color:var(--violet);font-weight:700}
-.version{display:block;color:#767e94;font-size:10px;letter-spacing:.16em;margin-top:3px}
-.new-chat{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid #4a426e;background:#a99aff;color:#11121b;border-radius:12px;padding:12px;font-weight:750;transition:.2s}
-.new-chat:hover{filter:brightness(1.08);transform:translateY(-1px)}
-.nav-label{font-size:10px;color:#717990;letter-spacing:.17em;padding:0 10px;margin-bottom:-11px}
-.history{display:flex;flex-direction:column;gap:5px;overflow:auto}
-.history-item{display:flex;gap:9px;align-items:center;border:1px solid transparent;border-radius:9px;padding:10px;color:#b6bdd0;background:transparent;text-align:left;font-size:13px;min-width:0}
-.history-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.history-item:hover,.history-item.active{background:#171a28;border-color:#292c3c;color:#fff}
-.sidebar-bottom{margin-top:auto;color:#777f94;font-size:11px;line-height:1.7;padding:0 8px}
-.sidebar-bottom a{color:#b8adff;text-decoration:none}
-.main{min-width:0;flex:1;display:flex;flex-direction:column;min-height:100vh}
-.topbar{height:70px;border-bottom:1px solid #202432;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,44px);gap:15px}
-.top-left{display:flex;align-items:center;gap:12px;min-width:0}
-.top-title{font-size:14px;font-weight:700}
-.top-sub{font-size:11px;color:#858da2;margin-top:3px}
-.status{display:flex;align-items:center;gap:7px;border:1px solid #343143;border-radius:99px;padding:7px 10px;font-size:11px;color:#c4baff;white-space:nowrap}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--violet)}
-.content{max-width:940px;width:100%;margin:0 auto;flex:1;display:flex;flex-direction:column;padding:0 clamp(16px,4vw,40px)}
-.welcome{margin:auto 0;padding:48px 0 40px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #37314f;background:#171426;color:#c6b8ff;padding:8px 12px;border-radius:99px;font-size:11px;letter-spacing:.04em}
-.welcome h1{font-size:clamp(36px,5.8vw,61px);line-height:1.03;letter-spacing:-.055em;margin:23px 0 17px;max-width:740px}
-.gradient{background:linear-gradient(95deg,#d9d0ff 5%,#aa98ff 47%,#83d5ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:16px;line-height:1.8;color:var(--muted);max-width:620px;margin:0}
-.suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:35px;max-width:720px}
-.suggestion{border:1px solid var(--line);background:linear-gradient(140deg,#131622,#0d1018);color:#e4e7f1;border-radius:14px;padding:16px;text-align:left;transition:.18s}
-.suggestion:hover{border-color:#696092;background:#171827;transform:translateY(-1px)}
-.suggestion strong{display:block;font-size:13px;margin-bottom:7px}
-.suggestion small{display:block;color:#9ca4b8;font-size:12px;line-height:1.5}
-.suggestion-icon{color:var(--violet);font-size:17px;margin-bottom:12px}
-.chat-area{display:none;flex-direction:column;gap:20px;padding:28px 0 26px}
-.chat-area.visible{display:flex}
-.message{display:grid;grid-template-columns:34px minmax(0,1fr);gap:13px;align-items:start}
-.avatar{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;font-size:12px;font-weight:800}
-.avatar.ai{background:linear-gradient(145deg,#c6b8ff,#7d74ed);color:#11121b}
-.avatar.user{background:#222838;color:#dce3f4;border:1px solid #353c50}
-.message-body{min-width:0;padding-top:3px}
-.message-role{font-size:11px;color:#8991a7;margin-bottom:8px}
-.message-text{font-size:14px;line-height:1.85;color:#e5e8f2;white-space:pre-wrap;overflow-wrap:anywhere}
-.message-text a{color:#c5b8ff}
-.typing{display:inline-flex;gap:5px;padding:6px 0}
-.typing i{width:5px;height:5px;border-radius:50%;background:#b6a9ff;animation:pulse .9s infinite alternate}
-.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
-@keyframes pulse{to{opacity:.25;transform:translateY(-3px)}}
-.composer-wrap{position:sticky;bottom:0;margin-top:auto;padding:12px 0 20px;background:linear-gradient(180deg,#080a1000,#080a10 16%)}
-.composer{border:1px solid #35394c;background:#11141e;border-radius:18px;padding:12px 13px 11px;box-shadow:0 15px 50px #0003;transition:border-color .2s}
-.composer:focus-within{border-color:#7d70bb}
-#prompt{display:block;width:100%;resize:none;min-height:45px;max-height:190px;border:0;background:transparent;color:var(--text);outline:none;padding:5px 5px 11px;line-height:1.6;font-size:14px}
-#prompt::placeholder{color:#727b91}
-.composer-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:4px}
-.composer-hint{color:#727b91;font-size:10px;line-height:1.5}
-.composer-actions{display:flex;align-items:center;gap:9px}
-.model-select{background:#1b1e2c;border:1px solid #32364a;color:#d9dced;border-radius:9px;padding:8px 10px;font-size:11px;max-width:175px}
-.send{width:38px;height:38px;border:0;border-radius:12px;background:var(--violet);color:#11121c;font-size:18px;font-weight:800;display:grid;place-items:center;transition:.2s}
-.send:disabled{opacity:.45;cursor:not-allowed}
-.send:not(:disabled):hover{transform:translateY(-1px);filter:brightness(1.07)}
-.disclaimer{text-align:center;color:#626b80;font-size:10px;padding:0 4px 12px;line-height:1.6}
-.toast{display:none;margin:10px 0 0;padding:11px 13px;background:#241b24;border:1px solid #60404a;color:#ffd6d9;border-radius:10px;font-size:12px;line-height:1.6}
-.toast.show{display:block}
-.settings-overlay{position:fixed;inset:0;background:#03040bcc;z-index:10;display:none;align-items:center;justify-content:center;padding:18px}
-.settings-overlay.open{display:flex}
-.settings-card{max-width:470px;width:100%;background:#11141e;border:1px solid #34384b;border-radius:19px;padding:23px;box-shadow:0 24px 90px #0009}
-.settings-heading{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.settings-heading h2{font-size:18px;margin:0}
-.icon-button{width:34px;height:34px;background:#1d2130;color:#cbd0df;border:1px solid #34384b;border-radius:10px;font-size:17px}
-.settings-copy{font-size:12px;color:#a3abc0;line-height:1.7;margin:13px 0 18px}
-.field-label{display:block;font-size:11px;color:#d7daea;margin:15px 0 8px}
-.field{width:100%;border:1px solid #353a4d;border-radius:10px;background:#090c13;padding:12px;color:#f3f4fb;font-size:13px}
-.settings-buttons{display:flex;justify-content:flex-end;gap:9px;margin-top:19px}
-.btn-secondary,.btn-primary{border-radius:10px;padding:10px 13px;font-size:12px;font-weight:700}
-.btn-secondary{background:#202433;border:1px solid #373c50;color:#e2e5f0}
-.btn-primary{background:var(--violet);color:#10111b;border:1px solid var(--violet)}
-.settings-foot{font-size:10px;line-height:1.6;color:#7d869b;margin-top:17px}
-.mobile-brand{display:none}
-@media(max-width:760px){
- .sidebar{width:218px;padding:18px 11px}.brand-name{font-size:15px}.topbar{height:62px}
- .welcome{padding:38px 0 30px}.lead{font-size:14px}.suggestions{gap:8px}.suggestion{padding:13px}
-}
-@media(max-width:560px){
- .sidebar{display:none}.mobile-brand{display:flex}.topbar{padding:0 15px}.top-title{display:none}
- .content{padding:0 15px}.welcome h1{letter-spacing:-.045em}.welcome{padding-top:34px}
- .suggestions{grid-template-columns:1fr}.suggestion{display:flex;align-items:center;gap:12px}.suggestion-icon{margin:0;width:24px;flex-shrink:0}.suggestion-text{min-width:0}
- .model-select{max-width:135px}.composer-hint{max-width:145px}.status{font-size:10px;padding:7px 8px}
- .message{grid-template-columns:29px minmax(0,1fr);gap:10px}.avatar{width:28px;height:28px;border-radius:9px}
-}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px solid #a1a1aa;outline-offset:3px}
+::selection{background:#fff;color:#000}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:#18181c;border-radius:2px}
+.topbar{position:fixed;inset:0 0 auto;z-index:20;background:rgba(0,0,0,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.topbar-inner{height:62px;max-width:1080px;margin:0 auto;padding:0 26px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;background:none;border:0;color:white;padding:4px}
+.brand-mark{width:19px;height:19px;border:1px solid rgba(255,255,255,.8);border-radius:5px;display:grid;place-items:center;transition:transform .2s}
+.brand:hover .brand-mark{transform:scale(.94)}
+.brand-dot{width:6px;height:6px;background:#fff;border-radius:50%}
+.brand-name{font-size:13px;font-weight:300;letter-spacing:-.035em}
+.brand-name em{font-family:"Fira Code",monospace;color:var(--muted);font-size:11px;font-style:normal;margin-left:4px}
+.top-actions{display:flex;align-items:center;gap:9px}
+.status{font-family:"Fira Code",monospace;font-size:9px;color:#84848b;border:1px solid var(--border);border-radius:5px;padding:7px 9px;display:flex;align-items:center;gap:7px}
+.status-dot{width:5px;height:5px;border-radius:50%;background:#71717a}
+.top-button{border:1px solid var(--border);background:var(--surface);color:#e4e4e7;border-radius:6px;font-size:11px;padding:8px 12px;transition:background .2s,border-color .2s}
+.top-button:hover{background:var(--surface-hover);border-color:#37373b}
+main{min-height:100vh;padding-top:62px}
+.view{min-height:calc(100vh - 62px)}
+.landing{max-width:850px;margin:0 auto;padding:70px 24px 50px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:calc(100vh - 62px)}
+.live-pill{display:inline-flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:7px 10px;margin-bottom:27px}
+.live-pip{width:5px;height:5px;border-radius:50%;background:#8a8a90;box-shadow:0 0 0 3px #8a8a9014}
+.pill-text{font-family:"Fira Code",monospace;font-size:10px;color:#a1a1aa;letter-spacing:.025em}
+.hero-title{font-size:clamp(36px,6.4vw,60px);font-weight:300;line-height:1.12;letter-spacing:-.065em;margin:0 0 17px}
+.hero-title span{color:var(--muted);font-weight:300}
+.hero-copy{max-width:460px;color:#71717a;font-weight:300;font-size:13px;line-height:1.85;margin:0 auto 34px}
+.composer-shell{width:100%;max-width:590px}
+.hero-composer{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px;transition:border-color .2s}
+.hero-composer:focus-within{border-color:#3f3f46}
+.hero-composer input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#fafafa;font-size:12px;padding:12px 11px}
+input::placeholder,textarea::placeholder{color:#52525b}
+.send-icon{width:34px;height:34px;flex-shrink:0;border:1px solid #262629;border-radius:6px;background:#f4f4f5;color:#000;display:grid;place-items:center;font-size:16px;transition:opacity .2s}
+.send-icon:hover{opacity:.84}
+.quick-prompts{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px;margin-top:14px}
+.quick-prompt{border:1px solid transparent;color:#71717a;background:transparent;border-radius:5px;padding:7px 9px;font-size:10px;transition:all .2s}
+.quick-prompt:hover{background:#09090b;border-color:var(--border);color:#d4d4d8}
+.landing-foot{font-family:"Fira Code",monospace;font-size:9px;letter-spacing:.04em;color:#424247;margin-top:56px}
+.chat-view{display:none;flex-direction:column;min-height:calc(100vh - 62px);max-width:800px;margin:0 auto;padding:34px 24px 16px}
+.chat-view.active{display:flex}
+.chat-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:18px;border-bottom:1px solid #111114}
+.chat-model{font-family:"Fira Code",monospace;color:#a1a1aa;font-size:10px;display:flex;align-items:center;gap:8px}
+.model-square{width:17px;height:17px;border:1px solid #343438;border-radius:4px;display:grid;place-items:center;color:#eee;font-size:10px}
+.chat-meta-actions{display:flex;gap:7px}
+.small-button{border:1px solid var(--border);border-radius:5px;background:#050505;color:#a1a1aa;padding:7px 9px;font-size:10px}
+.small-button:hover{color:#fff;border-color:#38383d}
+.messages{flex:1;width:100%;padding:26px 0 32px;display:flex;flex-direction:column;gap:25px}
+.empty-chat{margin:auto;text-align:center;padding:60px 0;color:#52525b}
+.empty-symbol{margin:0 auto 16px;width:28px;height:28px;border:1px solid #333338;border-radius:8px;display:grid;place-items:center;font-size:12px;color:#d4d4d8}
+.empty-chat h2{font-weight:300;font-size:17px;color:#e4e4e7;margin:0 0 8px;letter-spacing:-.03em}
+.empty-chat p{font-size:11px;line-height:1.7;max-width:290px;margin:auto;color:#71717a}
+.message{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;animation:fadeIn .3s cubic-bezier(.16,1,.3,1)}
+.message-avatar{width:23px;height:23px;border:1px solid #303034;border-radius:6px;display:grid;place-items:center;font-family:"Fira Code",monospace;font-size:9px;color:#e4e4e7}
+.message.user .message-avatar{background:#f4f4f5;color:#000;border-color:#f4f4f5}
+.message-main{min-width:0;padding-top:2px}
+.message-heading{font-size:10px;color:#71717a;margin:0 0 9px;font-family:"Fira Code",monospace}
+.message-content{font-size:13px;font-weight:300;line-height:1.9;color:#e4e4e7;overflow-wrap:anywhere;white-space:pre-wrap}
+.demo-note{margin-top:15px;border-left:1px solid #37373d;padding:7px 10px;color:#71717a;font-size:10px;line-height:1.7}
+.chat-bottom{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(0,0,0,0),#000 12%);padding:13px 0 7px}
+.chat-composer{border:1px solid #242428;border-radius:8px;background:#08080a;padding:7px;display:flex;align-items:flex-end;gap:7px;transition:border-color .2s}
+.chat-composer:focus-within{border-color:#3f3f46}
+.chat-composer textarea{width:100%;min-width:0;max-height:180px;min-height:41px;resize:none;background:transparent;border:0;outline:0;color:#f4f4f5;font-size:12px;line-height:1.7;padding:10px 9px}
+.chat-bottom-note{text-align:center;font-family:"Fira Code",monospace;color:#48484e;font-size:9px;margin-top:11px;line-height:1.6}
+footer{padding:15px 20px 21px;text-align:center;color:#3f3f46;font-family:"Fira Code",monospace;font-size:9px;letter-spacing:.04em}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.dots{display:flex;gap:4px;padding:4px 0}.dots i{width:4px;height:4px;border-radius:50%;background:#a1a1aa;animation:breathe 1s ease-in-out infinite}.dots i:nth-child(2){animation-delay:.16s}.dots i:nth-child(3){animation-delay:.32s}
+@keyframes breathe{0%,80%,100%{opacity:.3;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
+@media(min-width:800px){.landing{padding-top:55px}}
+@media(max-width:520px){.topbar-inner{padding:0 15px;height:58px}.status{font-size:8px;padding:7px}.top-button{padding:8px 10px}main{padding-top:58px}.landing{min-height:calc(100vh - 58px);padding:48px 18px 35px}.hero-title{font-size:40px}.hero-copy{font-size:12px}.landing-foot{margin-top:42px}.chat-view{padding:25px 15px 12px;min-height:calc(100vh - 58px)}.chat-meta-actions .small-button{padding:7px}.chat-bottom-note{font-size:8px}}
 </style>
 </head>
 <body>
-<div class="app">
-<aside class="sidebar">
-  <div class="brand"><div class="brand-mark">N</div><div><div class="brand-name">NOVALEN <span>AI</span></div><span class="version">INTELLIGENCE SPACE</span></div></div>
-  <button class="new-chat" id="newChat"><span>＋</span> Nuova conversazione</button>
-  <div class="nav-label">RECENTI</div>
-  <div class="history" id="history"></div>
-  <div class="sidebar-bottom">Un progetto indipendente.<br>Le risposte AI vengono fornite da un servizio esterno.<br><br><a href="#" id="openSettingsSide">Impostazioni connessione ↗</a></div>
-</aside>
-<main class="main">
-  <header class="topbar">
-    <div class="top-left">
-      <div class="brand mobile-brand"><div class="brand-mark">N</div><div class="brand-name">NOVALEN <span>AI</span></div></div>
-      <div><div class="top-title">Il tuo spazio intelligente</div><div class="top-sub">Studio · Idee · Produttività</div></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="status" id="connectionStatus"><span class="status-dot"></span><span id="statusLabel">Connessione da configurare</span></div>
-      <button class="icon-button" id="openSettings" aria-label="Impostazioni connessione" title="Impostazioni connessione">⚙</button>
-    </div>
-  </header>
-  <div class="content">
-    <section class="welcome" id="welcome">
-      <div class="eyebrow"><span>✦</span> INTELLIGENZA ARTIFICIALE, CON IL TUO STILE</div>
-      <h1>Le tue idee.<br><span class="gradient">Nuove possibilità.</span></h1>
-      <p class="lead">Un unico spazio per imparare, scrivere, ragionare e trasformare le tue idee in progetti concreti. Da dove iniziamo?</p>
-      <div class="suggestions">
-        <button class="suggestion" data-prompt="Spiegami un argomento difficile in modo semplice, con un esempio."><span class="suggestion-icon">✧</span><span class="suggestion-text"><strong>Impara qualcosa</strong><small>Spiegazioni chiare, esempi e studio guidato.</small></span></button>
-        <button class="suggestion" data-prompt="Aiutami a sviluppare un'idea passo dopo passo."><span class="suggestion-icon">↗</span><span class="suggestion-text"><strong>Sviluppa un'idea</strong><small>Organizza i pensieri e crea un piano concreto.</small></span></button>
-        <button class="suggestion" data-prompt="Rivedi e migliora questo testo mantenendo il mio stile:"><span class="suggestion-icon">✎</span><span class="suggestion-text"><strong>Scrivi meglio</strong><small>Testi, riassunti, traduzioni e revisione.</small></span></button>
-        <button class="suggestion" data-prompt="Aiutami a trovare e correggere un errore nel mio codice. Ti invierò il codice:"><span class="suggestion-icon">⌘</span><span class="suggestion-text"><strong>Risolvi un problema</strong><small>Ragionamento, programmazione e soluzioni.</small></span></button>
-      </div>
-    </section>
-    <section class="chat-area" id="chatArea" aria-live="polite"></section>
-    <div class="composer-wrap">
-      <div class="composer">
-        <textarea id="prompt" rows="1" maxlength="6000" placeholder="Scrivi un messaggio a Novalen AI…" aria-label="Scrivi un messaggio"></textarea>
-        <div class="composer-bottom">
-          <div class="composer-hint">Invio per inviare · Shift + Invio per andare a capo</div>
-          <div class="composer-actions">
-            <select class="model-select" id="modelSelect" aria-label="Modalità Novalen AI">
-              <option value="pulse">Pulse · Rapido</option>
-              <option value="nexus">Nexus · Studio</option>
-              <option value="apex">Apex · Creativo</option>
-            </select>
-            <button class="send" id="send" aria-label="Invia messaggio" title="Invia">↑</button>
-          </div>
-        </div>
-      </div>
-      <div class="toast" id="toast" role="status"></div>
-      <div class="disclaimer">Novalen AI è in versione iniziale. Non inserire password, dati finanziari o informazioni sensibili. Le risposte sono generate da un provider AI esterno e possono contenere errori.</div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <button class="brand" onclick="showView('landing')" aria-label="Torna alla homepage">
+      <span class="brand-mark"><span class="brand-dot"></span></span>
+      <span class="brand-name">novalen<em>ai</em></span>
+    </button>
+    <div class="top-actions">
+      <div class="status" title="Questa versione non è ancora collegata a un modello AI"><span class="status-dot"></span><span>preview mode</span></div>
+      <button class="top-button" onclick="showView('chat')">chat ↗</button>
     </div>
   </div>
+</header>
+
+<main>
+  <section id="landingView" class="view landing">
+    <div class="live-pill"><span class="live-pip"></span><span class="pill-text">novalen ai · visual preview</span></div>
+    <h1 class="hero-title">intelligenza fluida,<br><span>senza distrazioni.</span></h1>
+    <p class="hero-copy">Uno spazio minimale per pensare, esplorare idee e trovare nuove prospettive. Essenziale per scelta, potente nel suo potenziale.</p>
+    <div class="composer-shell">
+      <div class="hero-composer">
+        <input id="heroInput" type="text" maxlength="3000" placeholder="digita un comando o una domanda..." onkeydown="if(event.key==='Enter')startChatFromHero()">
+        <button class="send-icon" onclick="startChatFromHero()" aria-label="Invia domanda" title="Inizia una chat">↗</button>
+      </div>
+      <div class="quick-prompts">
+        <button class="quick-prompt" onclick="usePrompt('spiegami qualcosa di complesso in modo semplice')">spiegami qualcosa</button>
+        <button class="quick-prompt" onclick="usePrompt('aiutami a sviluppare una nuova idea')">sviluppa un’idea</button>
+        <button class="quick-prompt" onclick="usePrompt('aiutami a scrivere un testo migliore')">scrivi meglio</button>
+      </div>
+    </div>
+    <div class="landing-foot">LESS NOISE. MORE THOUGHT.</div>
+  </section>
+
+  <section id="chatView" class="view chat-view">
+    <div class="chat-meta">
+      <div class="chat-model"><span class="model-square">N</span><span>novalen / chat</span></div>
+      <div class="chat-meta-actions">
+        <button class="small-button" onclick="clearChat()">nuova chat +</button>
+        <button class="small-button" onclick="showView('landing')">home ↖</button>
+      </div>
+    </div>
+    <div id="messages" class="messages">
+      <div class="empty-chat" id="emptyChat">
+        <div class="empty-symbol">N</div>
+        <h2>da dove iniziamo?</h2>
+        <p>Scrivi una domanda, esplora un'idea o comincia da uno dei suggerimenti in homepage.</p>
+      </div>
+    </div>
+    <div class="chat-bottom">
+      <div class="chat-composer">
+        <textarea id="chatInput" rows="1" maxlength="3000" placeholder="scrivi un messaggio..." aria-label="Scrivi un messaggio" onkeydown="handleChatKey(event)" oninput="resizeInput(this)"></textarea>
+        <button class="send-icon" onclick="sendMessage()" aria-label="Invia messaggio">↑</button>
+      </div>
+      <div class="chat-bottom-note">INTERFACCIA IN ANTEPRIMA · MODELLO AI NON ANCORA COLLEGATO</div>
+    </div>
+  </section>
 </main>
-</div>
-<div class="settings-overlay" id="settingsOverlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-  <div class="settings-card">
-    <div class="settings-heading"><h2 id="settingsTitle">Configura Novalen AI</h2><button class="icon-button" id="closeSettings" aria-label="Chiudi">×</button></div>
-    <p class="settings-copy">Per attivare risposte AI reali, pubblica il backend Cloudflare Worker incluso nel repository e incolla qui il suo indirizzo completo. L'indirizzo viene salvato solo in questo browser.</p>
-    <label class="field-label" for="apiUrl">Indirizzo backend (endpoint)</label>
-    <input class="field" id="apiUrl" type="url" placeholder="https://nome-worker.nome-account.workers.dev/api/chat" autocomplete="url">
-    <div class="settings-buttons"><button class="btn-secondary" id="clearApi">Scollega</button><button class="btn-primary" id="saveApi">Salva connessione</button></div>
-    <div class="settings-foot">Sicurezza: non incollare la chiave Groq qui. La chiave va aggiunta come Secret nel backend, mai nel sito o su GitHub. Le tre modalità Novalen sono stili diversi dello stesso modello sottostante in questa versione iniziale.</div>
-  </div>
-</div>
+<footer>novalen ai · una nuova idea, ogni giorno</footer>
+
 <script>
 (function(){
-  "use strict";
-  var API_STORAGE_KEY = "novalen_backend_url_v1";
-  var CHATS_KEY = "novalen_chats_v1";
-  var apiUrl = localStorage.getItem(API_STORAGE_KEY) || "";
-  var chats = readChats();
-  var currentChatId = null;
-  var isSending = false;
-  var welcome = document.getElementById("welcome");
-  var chatArea = document.getElementById("chatArea");
-  var promptInput = document.getElementById("prompt");
-  var sendButton = document.getElementById("send");
-  var modelSelect = document.getElementById("modelSelect");
-  var toast = document.getElementById("toast");
-  var overlay = document.getElementById("settingsOverlay");
-  var apiField = document.getElementById("apiUrl");
+  const landingView=document.getElementById('landingView');
+  const chatView=document.getElementById('chatView');
+  const heroInput=document.getElementById('heroInput');
+  const chatInput=document.getElementById('chatInput');
+  const messages=document.getElementById('messages');
+  const emptyChat=document.getElementById('emptyChat');
+  let history=[];
 
-  function readChats(){
-    try { var saved = JSON.parse(localStorage.getItem(CHATS_KEY) || "[]"); return Array.isArray(saved) ? saved : []; }
-    catch(e){ return []; }
-  }
-  function saveChats(){
-    try { localStorage.setItem(CHATS_KEY, JSON.stringify(chats.slice(-30))); }
-    catch(e){ showToast("Non riesco a salvare la cronologia in questo browser."); }
-  }
-  function escapeText(value){ return String(value == null ? "" : value); }
-  function showToast(message){
-    toast.textContent = message;
-    toast.classList.add("show");
-  }
-  function clearToast(){ toast.textContent = ""; toast.classList.remove("show"); }
-  function updateStatus(){
-    document.getElementById("statusLabel").textContent = apiUrl ? "Backend configurato" : "Connessione da configurare";
-    document.querySelector(".status-dot").style.background = apiUrl ? "#81e0bd" : "#aa98ff";
-  }
-  function makeId(){ return String(Date.now()) + "-" + Math.random().toString(36).slice(2,8); }
-  function newChat(){
-    currentChatId = makeId();
-    chats.unshift({id:currentChatId,title:"Nuova conversazione",messages:[],createdAt:Date.now()});
-    saveChats();
-    renderHistory();
-    renderMessages();
-    promptInput.focus();
-  }
-  function getCurrentChat(){
-    for(var i=0;i<chats.length;i++) if(chats[i].id === currentChatId) return chats[i];
-    return null;
-  }
-  function renderHistory(){
-    var host = document.getElementById("history");
-    host.textContent = "";
-    chats.slice(0,15).forEach(function(chat){
-      var button = document.createElement("button");
-      button.className = "history-item" + (chat.id === currentChatId ? " active" : "");
-      var icon = document.createElement("span"); icon.textContent = "◌"; icon.style.color = "#a99aff";
-      var label = document.createElement("span"); label.textContent = chat.title || "Conversazione";
-      button.appendChild(icon); button.appendChild(label);
-      button.addEventListener("click",function(){ currentChatId=chat.id; clearToast(); renderHistory(); renderMessages(); });
-      host.appendChild(button);
-    });
-  }
-  function renderMessages(){
-    var chat = getCurrentChat();
-    chatArea.textContent = "";
-    if(!chat || !chat.messages.length){
-      chatArea.classList.remove("visible");
-      welcome.style.display = "block";
-      return;
+  window.showView=function(view){
+    const isChat=view==='chat';
+    landingView.style.display=isChat?'none':'flex';
+    chatView.classList.toggle('active',isChat);
+    if(isChat){setTimeout(()=>chatInput.focus(),80);}
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.startChatFromHero=function(){
+    const text=heroInput.value.trim();
+    showView('chat');
+    if(text){chatInput.value=text;sendMessage();}
+  };
+  window.usePrompt=function(text){
+    heroInput.value=text;
+    startChatFromHero();
+  };
+  window.handleChatKey=function(event){
+    if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}
+  };
+  window.resizeInput=function(el){
+    el.style.height='auto';
+    el.style.height=Math.min(el.scrollHeight,180)+'px';
+  };
+  function addMessage(role,text){
+    if(emptyChat) emptyChat.style.display='none';
+    const row=document.createElement('div');
+    row.className='message '+role;
+    const avatar=document.createElement('div');
+    avatar.className='message-avatar';
+    avatar.textContent=role==='user'?'tu':'N';
+    const main=document.createElement('div');
+    main.className='message-main';
+    const heading=document.createElement('div');
+    heading.className='message-heading';
+    heading.textContent=role==='user'?'you':'novalen ai';
+    const content=document.createElement('div');
+    content.className='message-content';
+    content.textContent=text;
+    main.appendChild(heading);main.appendChild(content);
+    if(role==='assistant'){
+      const note=document.createElement('div');
+      note.className='demo-note';
+      note.textContent='Risposta dimostrativa: il collegamento al modello AI verrà attivato in una fase successiva.';
+      main.appendChild(note);
     }
-    welcome.style.display = "none";
-    chatArea.classList.add("visible");
-    chat.messages.forEach(function(message){ appendMessage(message.role,message.content); });
-    chatArea.scrollTop = chatArea.scrollHeight;
+    row.appendChild(avatar);row.appendChild(main);messages.appendChild(row);
+    row.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
-  function appendMessage(role,content){
-    var row = document.createElement("div"); row.className="message";
-    var avatar = document.createElement("div"); avatar.className="avatar " + (role==="user"?"user":"ai"); avatar.textContent=role==="user"?"TU":"N";
-    var body = document.createElement("div"); body.className="message-body";
-    var name = document.createElement("div"); name.className="message-role"; name.textContent=role==="user"?"Tu":"Novalen AI";
-    var text = document.createElement("div"); text.className="message-text"; text.textContent=escapeText(content);
-    body.appendChild(name); body.appendChild(text); row.appendChild(avatar); row.appendChild(body); chatArea.appendChild(row);
-    return row;
-  }
-  function appendTyping(){
-    var row = document.createElement("div"); row.className="message"; row.id="typingRow";
-    var avatar = document.createElement("div"); avatar.className="avatar ai"; avatar.textContent="N";
-    var body = document.createElement("div"); body.className="message-body";
-    var name = document.createElement("div"); name.className="message-role"; name.textContent="Novalen AI sta pensando";
-    var dots = document.createElement("div"); dots.className="typing";
-    for(var i=0;i<3;i++){ dots.appendChild(document.createElement("i")); }
-    body.appendChild(name); body.appendChild(dots); row.appendChild(avatar); row.appendChild(body); chatArea.appendChild(row);
-    chatArea.scrollTop=chatArea.scrollHeight;
-  }
-  function removeTyping(){ var row=document.getElementById("typingRow"); if(row) row.remove(); }
-  function currentMode(){ return modelSelect.value; }
-  function modeName(mode){ return mode==="nexus"?"Nexus":mode==="apex"?"Apex":"Pulse"; }
-  async function sendMessage(){
-    if(isSending) return;
-    clearToast();
-    var question = promptInput.value.trim();
-    if(!question){ promptInput.focus(); return; }
-    if(!apiUrl){
-      showToast("La chat AI non è ancora collegata. Apri ⚙ Impostazioni connessione, pubblica il backend incluso nel repository e incolla l'endpoint /api/chat.");
-      return;
-    }
-    if(!/^https:\/\/[^ ]+\/api\/chat\/?$/.test(apiUrl)){
-      showToast("L'indirizzo deve essere HTTPS e terminare con /api/chat. Controlla le impostazioni di connessione.");
-      return;
-    }
-    if(!currentChatId) newChat();
-    var chat = getCurrentChat();
-    if(!chat) return;
-    chat.messages.push({role:"user",content:question});
-    if(chat.messages.filter(function(m){return m.role==="user";}).length===1) chat.title=question.length>36?question.slice(0,36)+"…":question;
-    promptInput.value="";
-    promptInput.style.height="auto";
-    saveChats(); renderHistory(); renderMessages();
-    isSending=true; sendButton.disabled=true; appendTyping();
-    try{
-      var response = await fetch(apiUrl,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({mode:currentMode(),messages:chat.messages.slice(-12).map(function(m){return {role:m.role,content:m.content};})})
-      });
-      var data={};
-      try { data=await response.json(); } catch(e){}
-      removeTyping();
-      if(!response.ok) throw new Error(data.error || (response.status===429?"Troppe richieste: attendi un minuto e riprova.":"Il backend ha restituito un errore ("+response.status+")."));
-      if(!data.reply || typeof data.reply!=="string") throw new Error("La risposta ricevuta non è valida. Controlla la configurazione del backend.");
-      chat.messages.push({role:"assistant",content:data.reply});
-      saveChats(); renderMessages();
-    }catch(error){
-      removeTyping();
-      var message = error && error.message ? error.message : "Errore di connessione. Verifica internet e indirizzo del backend.";
-      if(error instanceof TypeError) message="Non riesco a raggiungere il backend. Controlla l'URL, che termini con /api/chat, e la configurazione CORS di Cloudflare.";
-      showToast(message);
-      renderMessages();
-    }finally{
-      isSending=false; sendButton.disabled=false; promptInput.focus();
-    }
-  }
-  function openSettings(){ apiField.value=apiUrl; overlay.classList.add("open"); apiField.focus(); }
-  function closeSettings(){ overlay.classList.remove("open"); }
-  document.getElementById("newChat").addEventListener("click",newChat);
-  sendButton.addEventListener("click",sendMessage);
-  promptInput.addEventListener("keydown",function(event){
-    if(event.key==="Enter" && !event.shiftKey){ event.preventDefault(); sendMessage(); }
-  });
-  promptInput.addEventListener("input",function(){promptInput.style.height="auto";promptInput.style.height=Math.min(promptInput.scrollHeight,190)+"px";});
-  document.querySelectorAll("[data-prompt]").forEach(function(button){
-    button.addEventListener("click",function(){promptInput.value=button.getAttribute("data-prompt");promptInput.focus();promptInput.dispatchEvent(new Event("input"));});
-  });
-  document.getElementById("openSettings").addEventListener("click",openSettings);
-  document.getElementById("openSettingsSide").addEventListener("click",function(event){event.preventDefault();openSettings();});
-  document.getElementById("closeSettings").addEventListener("click",closeSettings);
-  overlay.addEventListener("click",function(event){if(event.target===overlay)closeSettings();});
-  document.addEventListener("keydown",function(event){if(event.key==="Escape")closeSettings();});
-  document.getElementById("saveApi").addEventListener("click",function(){
-    var value=apiField.value.trim().replace(/\/+$/,"");
-    if(value && !/^https:\/\/[^ ]+\/api\/chat$/.test(value)){
-      alert("Inserisci l'URL HTTPS completo del backend, con /api/chat alla fine."); return;
-    }
-    apiUrl=value;
-    if(apiUrl) localStorage.setItem(API_STORAGE_KEY,apiUrl); else localStorage.removeItem(API_STORAGE_KEY);
-    updateStatus(); closeSettings(); clearToast();
-  });
-  document.getElementById("clearApi").addEventListener("click",function(){
-    apiUrl="";localStorage.removeItem(API_STORAGE_KEY);apiField.value="";updateStatus();closeSettings();
-    showToast("Backend scollegato. Nessuna chiave API è stata salvata in questo browser.");
-  });
-  updateStatus(); renderHistory();
-  if(chats.length){currentChatId=chats[0].id;renderMessages();} else {welcome.style.display="block";}
+  window.sendMessage=function(){
+    const text=chatInput.value.trim();
+    if(!text)return;
+    addMessage('user',text);
+    chatInput.value='';chatInput.style.height='auto';
+    const row=document.createElement('div');
+    row.className='message';row.id='thinking';
+    row.innerHTML='<div class="message-avatar">N</div><div class="message-main"><div class="message-heading">novalen ai</div><div class="dots"><i></i><i></i><i></i></div></div>';
+    messages.appendChild(row);
+    row.scrollIntoView({behavior:'smooth',block:'nearest'});
+    setTimeout(function(){
+      row.remove();
+      const response='La tua richiesta è stata ricevuta. L’interfaccia di Novalen AI è pronta, ma non è ancora collegata a un modello AI reale. Nel prossimo passaggio possiamo configurare in modo sicuro il collegamento a Groq.';
+      addMessage('assistant',response);
+    },600);
+  };
+  window.clearChat=function(){
+    history=[];
+    messages.innerHTML='<div class="empty-chat" id="emptyChat"><div class="empty-symbol">N</div><h2>da dove iniziamo?</h2><p>Scrivi una domanda, esplora un\\'idea o comincia da uno dei suggerimenti in homepage.</p></div>';
+  };
 })();
 </script>
 </body>
