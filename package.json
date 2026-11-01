@@ -1,0 +1,35 @@
+{
+  "name": "novalen-ai",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "check": "tsc --noEmit && npm test",
+    "worker:check": "wrangler deploy --dry-run --outdir .worker-build",
+    "deploy": "npm run build && wrangler deploy",
+    "verify:live": "node --env-file-if-exists=.env scripts/verify-live.mjs"
+  },
+  "dependencies": {
+    "lucide-react": "^1.31.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.19",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.13",
+    "wrangler": "^4.92.0"
+  }
+}
