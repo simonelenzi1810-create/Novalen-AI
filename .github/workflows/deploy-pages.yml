@@ -1,8 +1,7 @@
-name: Deploy Novalen AI to GitHub Pages
+name: Publish NOVALEN AI frontend (manual)
 
+# Publication requires an explicit user action; pushes and PRs never deploy.
 on:
-  push:
-    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +10,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "github-pages"
+  group: github-pages
   cancel-in-progress: true
 
 jobs:
@@ -21,24 +20,18 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          enablement: true
-
-      - name: Prepare static site
-        run: |
-          mkdir -p _site
-          cp index.html _site/index.html
-
-      - name: Upload site artifact
-        uses: actions/upload-pages-artifact@v3
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
+          path: dist
+      - name: Deploy frontend
         id: deployment
         uses: actions/deploy-pages@v4

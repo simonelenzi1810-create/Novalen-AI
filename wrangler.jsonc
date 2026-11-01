@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "novalen-ai",
+  "main": "server/worker.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "APP_ENV": "production",
+    "GROQ_MODELS": "openai/gpt-oss-20b,openai/gpt-oss-120b"
+  },
+  "ratelimits": [
+    { "name": "CHAT_RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+    { "name": "SITE_RATE_LIMITER", "namespace_id": "1002", "simple": { "limit": 25, "period": 60 } }
+  ],
+  "observability": { "enabled": false }
+}
